@@ -5,17 +5,20 @@ local paths = {}
 local main = "init"
 local output = "./run"
 
-local help = [[debug [options] dirs+
+local help = [[debug [options] [dirs]
 
 options:
--o output - the output file (default=./run) without .lua, '.' is replaced with the project path
--m main - the main file (default=init) without .lua
--c - minify source code
--f - include Flare source files in the build
+    -o output - the output file (default=./run) without .lua, '.' is replaced with the project path
+    -m main - the main file (default=init) without .lua
+    -c - minify source code
+    -f - include Flare source files in the build
+
+dirs:
+    Each directory given is added as a path that Flare looks in when requiring files
 
 examples:
-debug MyProject - builds MyProject with main file 'MyProject/init.lua' and outputs to 'MyProject/run.lua'
-debug Test -m main -o out - builds Test with main file 'Test/main.lua' and outputs to 'Test/out.lua']]
+    debug MyProject - builds MyProject with main file 'MyProject/init.lua' and outputs to 'MyProject/run.lua'
+    debug Test -m main -o ./out - builds Test with main file 'Test/main.lua' and outputs to 'Test/out.lua']]
 
 if args[1] == "-h" or args[1] == "help" then
 	return print( help )

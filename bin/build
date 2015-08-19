@@ -5,18 +5,22 @@ local paths = {}
 local main = "init"
 local output = "./run"
 local includeFlare = false
+local minify = false
 
-local help = [[build [options] dirs+
+local help = [[build [options] [dirs]
 
 options:
--o output - the output file (default=./run) without .lua, '.' is replaced with the project path
--m main - the main file (default=init) without .lua
--c - minify source code
--f - include Flare source files in the build
+    -o output - the output file (default=./run) without .lua, '.' is replaced with the project path
+    -m main - the main file (default=init) without .lua
+    -c - minify source code
+    -f - include Flare source files in the build
+
+dirs:
+    Each directory given is added as a path that Flare looks in when requiring files
 
 examples:
-build MyProject - builds MyProject with main file 'MyProject/init.lua' and outputs to 'MyProject/run.lua'
-build Test -m main -o ./out - builds Test with main file 'Test/main.lua' and outputs to 'Test/out.lua']]
+    build MyProject - builds MyProject with main file 'MyProject/init.lua' and outputs to 'MyProject/run.lua'
+    build Test -m main -o ./out - builds Test with main file 'Test/main.lua' and outputs to 'Test/out.lua']]
 
 if args[1] == "-h" or args[1] == "help" then
 	return print( help )
@@ -29,7 +33,7 @@ for i = 1, #args do
 	elseif args[i] == "-o" then
 		flag = "output"
 	elseif args[i] == "-c" then
-		print "minification (-c) isn't currently supported"
+		minify = true
 	elseif args[i] == "-f" then
 		includeFlare = true
 	elseif flag == "main" then
@@ -43,6 +47,22 @@ for i = 1, #args do
 	end
 end
 
+local minAPI
+if minify then
+	minAPI = setmetatable( {}, { __index = _ENV or getfenv() } )
+	local h = fs.open( "Flare/minify.lua", "r" )
+	if h then
+		local f, err = load( h.readAll(), "minify", nil, minAPI )
+		h.close()
+		if not f then
+			error( err, 0 )
+		end
+		f()
+	else
+		error( "failed to open Flare/minify.lua", 0 )
+	end
+end
+
 local userpathcount = #paths
 if userpathcount == 0 then
 	error( "expected one or more paths", 0 )
@@ -52,6 +72,13 @@ for i = 1, userpathcount do
 	if not fs.isDir( paths[i] ) then
 		error( "no such directory " .. ("%q"):format( paths[i] ), 0 )
 	end
+end
+
+local function formatFileContent( str )
+	if minify then
+		return ("%q"):format( minAPI.Rebuild.MinifyString( str ) ):gsub( "\\\n", "\\n" )
+	end
+	return ("%q"):format( str )
 end
 
 local FLAREPATH = "Flare/lib;Flare/lib/elements"
@@ -93,11 +120,6 @@ local function requirefile( file )
 	local content = h.readAll()
 	h.close()
 
-	if includeFlare or not isFlareFile then
-		print( "Including file '" .. file .. "' (" .. fpath .. ")" )
-		files = files .. "\t[" .. ("%q"):format( file ) .. "] = " .. ("%q"):format( content ) .. ";\n"
-	end
-
 	local function _err()
 		error( "@", 0 )
 	end
@@ -115,9 +137,26 @@ local function requirefile( file )
 	if not ok and err ~= "@" then
 		error( err, 0 )
 	end
+
+	if includeFlare or not isFlareFile then
+		print( "Including file '" .. file .. "' (" .. fpath .. ")" )
+		files = files .. "\t[" .. ("%q"):format( file ) .. "] = " .. formatFileContent( content ) .. ";\n"
+	end
 end
 
 requirefile( main )
+
+if includeFlare then
+	requirefile "class"
+	requirefile "UIView"
+	requirefile "Timer"
+	requirefile "graphics.ScreenCanvas"
+	requirefile "Event.Event"
+	requirefile "Event.MouseEvent"
+	requirefile "Event.KeyboardEvent"
+	requirefile "Event.TextEvent"
+	requirefile "Timer"
+end
 
 files = files .. "}"
 
@@ -135,13 +174,25 @@ if not fs.exists "Flare" then
 end
 ]]
 
-local str = FlareInstaller .. "local files = " .. files
+local str = "local files = " .. files .. "\n" .. ( includeFlare and "" or  FlareInstaller ) .. "local loader"
 
 if includeFlare then
-	error( "including Flare in a build is not yet supported", 0 )
+	local run = fs.open( "Flare/run.lua", "r" )
+	if run then
+		str = str .. " = " .. formatFileContent( run.readAll() )
+		run.close()
+	else
+		error( "failed to read Flare", 0 )
+	end
 else
-	str = str .. "\nloadfile \"Flare/run.lua\" ( files, " .. ("%q"):format( main ) .. " )"
+	str = str .. "\nlocal h = fs.open( \"Flare/run.lua\", \"r\" )\nif h then\n\tloader = h.readAll()\n\th.close()\nelse\n\terror( \"failed to read Flare\", 0 )\nend"
 end
+
+str = str .. "\nlocal f, err = load( loader, \"Flare\", nil, _ENV or getfenv() )\
+if not f then\
+	error( \"there was a problem with Flare!: \" .. err, 0 )\
+end\
+f( files, " .. ("%q"):format( main ) .. " )"
 
 local w = {}
 local path = output:gsub( "%.", paths[1] ) .. ".lua"

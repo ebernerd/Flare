@@ -25,7 +25,7 @@ It's easy to make a Flare application. A hello world in Flare:
 ```lua
 require "UIButton"
 
-local button = application.view:addChild( UIButton( 0, 0, 20, 5, "Hello world!" ) )
+local button = application:addChild( UIButton( 0, 0, 20, 5, "Hello world!" ) )
 button.colour = colours.cyan
 button.textColour = colours.white
 ```
