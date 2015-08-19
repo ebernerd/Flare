@@ -32,4 +32,4 @@ button.textColour = colours.white
 
 Then to run it, `Flare/build/debug MyProject`
 
-There's more to it than that, but read through the docs for more information (the docs folder in the repo). `Getting Started.txt` is a great place to start.
+There's more to it than that, but read through the docs for more information (the docs folder in the repo). `Getting Started.md` is a great place to start.
