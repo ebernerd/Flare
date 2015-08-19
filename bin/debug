@@ -1,0 +1,50 @@
+
+local args = { ... }
+
+local paths = {}
+local main = "init"
+local output = "./run"
+
+local help = [[debug [options] dirs+
+
+options:
+-o output - the output file (default=./run) without .lua, '.' is replaced with the project path
+-m main - the main file (default=init) without .lua
+-c - minify source code
+-f - include Flare source files in the build
+
+examples:
+debug MyProject - builds MyProject with main file 'MyProject/init.lua' and outputs to 'MyProject/run.lua'
+debug Test -m main -o out - builds Test with main file 'Test/main.lua' and outputs to 'Test/out.lua']]
+
+if args[1] == "-h" or args[1] == "help" then
+	return print( help )
+end
+
+local flag
+for i = 1, #args do
+	if args[i] == "-m" then
+		flag = "main"
+	elseif args[i] == "-o" then
+		flag = "output"
+	elseif args[i] == "-c" then
+		
+	elseif args[i] == "-f" then
+		
+	elseif flag == "main" then
+		flag = nil
+	elseif flag == "output" then
+		flag = nil
+		output = args[i]
+	else
+		paths[#paths + 1] = args[i]
+	end
+end
+
+local userpathcount = #paths
+if userpathcount == 0 then
+	error( "expected one or more paths", 0 )
+end
+
+loadfile "Flare/bin/build" ( unpack( args ) )
+shell.run( output:gsub( "%.", paths[1] ) .. ".lua" )

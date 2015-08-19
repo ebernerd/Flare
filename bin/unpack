@@ -1,0 +1,41 @@
+
+local args = { ... }
+
+local function assertype( a, b, c )
+	return type( a ) == b and a or error( c, 0 )
+end
+
+local input = assertype( args[1], "string", "expected input path as arg#1" )
+local output = assertype( args[2], "string", "expected output path as arg#2" )
+
+if not fs.exists( input ) then
+	error( "input path does not exist", 0 )
+elseif fs.isDir( input ) then
+	error( "input path is a directory", 0 )
+end
+if fs.exists( output ) and not fs.isDir( output ) then
+	error( "output path is not a directory", 0 )
+end
+
+local h = fs.open( input, "r" )
+local content = h.readAll()
+h.close()
+
+if not fs.exists( output ) then
+	fs.makeDir( output )
+end
+
+local files = textutils.unserialize( content )
+if type( files ) ~= "table" then
+	error( "input path is not an unpackable file", 0 )
+end
+
+for k, v in pairs( files ) do
+	local h = fs.open( output .. k, "w" )
+	if h then
+		h.write( v )
+		h.close()
+	else
+		error( "failed to open file " .. k, 0 )
+	end
+end

@@ -1,0 +1,29 @@
+
+UIButton.lua
+------------
+
+The UIButton is a clickable object with centre-aligned wordwrapped text.
+
+	UIButton( number x, number y, number width, number height, string text )
+		- creates a button object
+
+	(Callback) UIButton:onClick()
+		- called when the button is clicked
+
+	(number) UIButton.colour
+		- the background colour of the button
+		- use values from the colours table, i.e. `colours.blue`
+		- this supports 0 as a colour for transparent
+
+	(number) UIButton.textColour
+		- the text colour of the button
+		- use values from the colours table, i.e. `colours.blue`
+		- this supports 0 as a colour for transparent
+
+	(string) UIButton.text
+		- the text the button contains
+		- this is wordwrapped and centre aligned when drawn
+
+	(bool) UIButton.holding
+		- tracks whether the button is being held by the user (mouse down on it)
+		- this should not be changed manually

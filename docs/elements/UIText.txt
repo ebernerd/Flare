@@ -1,0 +1,122 @@
+
+Some notes on text formatting
+-----------------------------
+
+	Text formatting in Flare is used by typing @[function]...
+
+	There are currently 5 functions
+		Alignment: a
+			- takes l, r or c to align text horizontally
+			- i.e. "@ac" to centre align
+
+		Text colour: t
+			- takes a value from the colour identifiers below to set the text colour of following text
+			- i.e. "@tb" to set the text colour to blue
+
+		Background colour: b
+			- takes a value from the colour identifiers below to set the background colour of following text
+			- i.e. "@tb" to set the background colour to blue
+
+		Link: l
+			- formatted like so:
+				@l[display](link)
+			- will trigger onLinkFollowed() of the parent object, but not yet implemented
+
+		Marker: m
+			- formatted like so:
+				@m(link)
+			- will be used for identifying the position of characters after being wrapped and formatted, but not yet implemented
+
+	You can also use @ as an escape character, so "@@" will be a single @ in the text object.
+
+	Colour identifiers:
+		0 = white
+		1 = orange
+		2 = magenta
+		3 = lightBlue
+		4 = yellow
+		5 = lime
+		6 = pink
+		7 = grey
+		8 = lightGrey
+		9 = cyan
+		a = purple
+		b = blue
+		c = brown
+		d = green
+		e = red
+		f = black
+		  = transparent (space)
+
+	Example:
+		
+		local obj = UIText( 0, 0, 20, 5, "@ac@tb@bfHello world")
+	
+	Output:
+		
+		Blue text colour, black background colour, and text centred within the boundaries of the object
+
+UIText.lua
+----------
+
+The UIText object is...
+
+	UIText( number x, number y, number width, number height, string text )
+		- creates a text object
+
+	(number) UIText.colour
+		- the background colour of the object
+
+	(number) UIText.textColour
+		- the text colour of the object
+
+	(string) UIText.text
+		- the text of the object
+
+	(number) UIText.selectedColour
+		- the background colour of selected text
+
+	(number) UIText.selectedTextColour
+		- the text colour of selected text
+
+	(string) UIText.alignment
+		- the vertical text alignment
+
+	(bool) UIText.wrap
+		- whether word wrap the text in the object
+
+	(bool) UIText.selectable
+		- whether the text is selectable
+
+	(number) UIText.internalWidth
+		- the width to wrap the text to, defaults to the element's width
+
+	(number) UIText.internalHeight
+		- the height to wrap the text to, defaults to (nothing, no height wrapping)
+
+	UIText:updateText()
+		- reformats the text
+
+	UIText:getContentWidth() returns number
+		- returns the max width of the content
+
+	UIText:getContentHeight() returns number
+		- returns the height of the contetn
+
+	UIText:getDisplayWidth() returns number
+		- returns the width of the text object, used internally for the scrollbars
+
+	UIText:getDisplayHeight() returns number
+		- returns the height of the text object, used internally for the scrollbars
+
+	UIText:getHorizontalOffset() returns number
+		- returns the horizontal offset of the text object, used internally for the scrollbars
+
+	UIText:getVerticalOffset() returns number
+		- returns the vertical offset of the text object, used internally for the scrollbars
+
+	UIText:setHorizontalOffset( number scroll )
+		- sets the horizontal offset of the text object, used internally for the scrollbars
+
+	UIText:setVerticalOffset( number scroll )
+		- sets the vertical offset of the text object, used internally for the scrollbars

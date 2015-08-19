@@ -1,0 +1,43 @@
+
+UIWindow.lua
+----------
+
+	UIWindow( number x, number y, number width, number height )
+		- creates the window object
+
+	(number) UIWindow.minWidth
+		- the minimum width of the window object
+
+	(number) UIWindow.minHeight
+		- the minimum height of the window object
+
+	(number) UIWindow.maxWidth
+		- the maximum width of the window object
+
+	(number) UIWindow.maxHeight
+		- the maximum height of the window object
+
+	(string) UIWindow.title
+		- the title text of the window
+
+	(number) UIWindow.titleColour
+		- the title background colour of the window object
+
+	(number) UIWindow.titleTextColour
+		- the title text colour of the window object
+
+	(number) UIWindow.shadowColour
+		- the colour of the window shadow
+
+	(bool) UIWindow.closeable
+		- whether the user is able to close the window
+
+	(bool) UIWindow.resizeable
+		- whether the user is able to resize the window
+
+	(bool) UIWindow.moveable
+		- whether the user is able to move the window
+
+	[UIContainer] UIWindow.content
+		- the container of elements in the window
+		- all children to the window should be added to this, NOT the window itself

@@ -1,0 +1,42 @@
+
+local args = { ... }
+
+local function assertype( a, b, c )
+	return type( a ) == b and a or error( c, 0 )
+end
+
+local input = assertype( args[1], "string", "expected input path as arg#1" )
+local output = assertype( args[2], "string", "expected output path as arg#2" )
+
+if not fs.isDir( input ) then
+	error( "input path is not a directory", 0 )
+end
+if fs.isDir( output ) then
+	error( "output path is a directory", 0 )
+end
+
+local str = "{\n"
+
+local function scandir( path, name )
+	for _, file in ipairs( fs.list( path ) ) do
+		local filename = name .. "/" .. file
+		if fs.isDir( path .. "/" .. file ) then
+			scandir( path .. "/" .. file, filename )
+		else
+			local h = fs.open( path .. "/" .. file, "r" )
+			local content = h.readAll()
+			h.close()
+			str = str .. "\t[" .. ("%q"):format( filename ) .. "] = " .. ("%q"):format( content ):gsub( "\\\n", "\\n" ) .. ";\n"
+		end
+	end
+end
+
+scandir( input, "" )
+
+local h = fs.open( output, "w" )
+if h then
+	h.write( str .. "}" )
+	h.close()
+else
+	error( "failed to open output file", 0 )
+end

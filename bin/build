@@ -1,0 +1,157 @@
+
+local args = { ... }
+
+local paths = {}
+local main = "init"
+local output = "./run"
+local includeFlare = false
+
+local help = [[build [options] dirs+
+
+options:
+-o output - the output file (default=./run) without .lua, '.' is replaced with the project path
+-m main - the main file (default=init) without .lua
+-c - minify source code
+-f - include Flare source files in the build
+
+examples:
+build MyProject - builds MyProject with main file 'MyProject/init.lua' and outputs to 'MyProject/run.lua'
+build Test -m main -o ./out - builds Test with main file 'Test/main.lua' and outputs to 'Test/out.lua']]
+
+if args[1] == "-h" or args[1] == "help" then
+	return print( help )
+end
+
+local flag
+for i = 1, #args do
+	if args[i] == "-m" then
+		flag = "main"
+	elseif args[i] == "-o" then
+		flag = "output"
+	elseif args[i] == "-c" then
+		print "minification (-c) isn't currently supported"
+	elseif args[i] == "-f" then
+		includeFlare = true
+	elseif flag == "main" then
+		flag = nil
+		main = args[i]
+	elseif flag == "output" then
+		flag = nil
+		output = args[i]
+	else
+		paths[#paths + 1] = args[i]
+	end
+end
+
+local userpathcount = #paths
+if userpathcount == 0 then
+	error( "expected one or more paths", 0 )
+end
+
+for i = 1, userpathcount do
+	if not fs.isDir( paths[i] ) then
+		error( "no such directory " .. ("%q"):format( paths[i] ), 0 )
+	end
+end
+
+local FLAREPATH = "Flare/lib;Flare/lib/elements"
+for seg in FLAREPATH:gmatch "[^;]+" do
+	paths[#paths + 1] = seg
+end
+
+local required = {}
+local lookup = {}
+
+local files = "{\n"
+
+local function requirefile( file )
+	if required[file] then return end
+	required[file] = true
+
+	local path = file:gsub( "%.", "/" )
+	local fpath, isFlareFile
+	
+	for i = 1, #paths do
+		if fs.exists( paths[i] .. "/" .. path .. ".lua" ) and not fs.isDir( paths[i] .. "/" .. path .. ".lua" ) then
+			fpath = paths[i] .. "/" .. path .. ".lua"
+		elseif fs.exists( paths[i] .. "/" .. path .. "/init.lua" ) and not fs.isDir( paths[i] .. "/" .. path .. "/init.lua" ) then
+			fpath = paths[i] .. "/" .. path .. "/init.lua"
+		end
+		if fpath then
+			isFlareFile = i > userpathcount
+			break
+		end
+	end
+
+	if not fpath then
+		error( "failed to find file " .. ("%q"):format( file ) .. " in paths given", 0 )
+	end
+
+	lookup[file] = fpath
+
+	local h = fs.open( fpath, "r" )
+	local content = h.readAll()
+	h.close()
+
+	if includeFlare or not isFlareFile then
+		print( "Including file '" .. file .. "' (" .. fpath .. ")" )
+		files = files .. "\t[" .. ("%q"):format( file ) .. "] = " .. ("%q"):format( content ) .. ";\n"
+	end
+
+	local function _err()
+		error( "@", 0 )
+	end
+	local env = setmetatable( { require = requirefile }, {} )
+
+	local f, err = load( content, file, nil, env )
+	if not f then
+		error( err, 0 )
+	end
+
+	getmetatable( env ).__index = _err
+	getmetatable( env ).__newindex = _err
+
+	local ok, err = pcall( f, file )
+	if not ok and err ~= "@" then
+		error( err, 0 )
+	end
+end
+
+requirefile( main )
+
+files = files .. "}"
+
+local FlareInstaller = [[
+if not fs.exists "Flare" then
+	print "Downloading Flare"
+	local h = http.get "http://pastebin.com/raw.php?i=SD25GhYf"
+	if h then
+		local f, err = load( h.readAll(), "installer", nil, _ENV or getfenv() )
+		h.close()
+		f()
+	else
+		return error( "Cannot install Flare", 0 )
+	end
+end
+]]
+
+local str = FlareInstaller .. "local files = " .. files
+
+if includeFlare then
+	error( "including Flare in a build is not yet supported", 0 )
+else
+	str = str .. "\nloadfile \"Flare/run.lua\" ( files, " .. ("%q"):format( main ) .. " )"
+end
+
+local w = {}
+local path = output:gsub( "%.", paths[1] ) .. ".lua"
+if not w[path] then
+	w[path] = true
+	local h = fs.open( path, "w" )
+	if h then
+		h.write( str )
+		h.close()
+	else
+		print( "Failed to open output file " .. ("%q"):format( path ) )
+	end
+end

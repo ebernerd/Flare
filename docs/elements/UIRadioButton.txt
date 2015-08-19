@@ -1,0 +1,33 @@
+
+UIRadioButton.lua
+--------------
+
+The UIRadioButton is a 1x1 object with a toggleable mark in the centre that is linked to other objects in its group such that only one object is toggled on at a time.
+
+	Note, you cannot change the width or height of this object
+
+	UIRadioButton( number x, number y )
+		- creates a radio button, 1 wide by 1 tall
+
+	(Callback) UIRadioButton:onToggle()
+		- called when the radio button is toggled
+
+	(number) UIRadioButton.colour
+		- the background colour of the radio button
+		- use values from the colours table, i.e. `colours.blue`
+		- this supports 0 as a colour for transparent
+
+	(number) UIRadioButton.checkColour
+		- the text colour of the radio button
+		- use values from the colours table, i.e. `colours.blue`
+		- this supports 0 as a colour for transparent
+
+	(string) UIRadioButton.check
+		- the text the radio button contains
+		- this is wordwrapped and centre aligned when drawn
+
+	(bool) UIRadioButton.toggled
+		- whether or not the radio button is currently toggled
+
+	(number/string) UIRadioButton.group
+		- the group the radio button belongs to

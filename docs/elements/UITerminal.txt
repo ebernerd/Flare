@@ -1,0 +1,17 @@
+
+UITerminal.lua
+--------------
+
+	UITerminal( number x, number y, number width, number height )
+		- creates a terminal object
+
+	(TermCanvas) UITerminal.canvas
+		- the canvas with :getTerminalRedirect() that it draws to
+
+	(Callback) UITerminal:onEvent( string event, ... )
+		- called when the terminal gets an event, i.e. a click
+		- arguments are the computercraft-formatted event, i.e. "mouse_click" or "mouse_drag"
+		- mouse event coordinates are relative to the object
+
+	UITerminal:wrap()
+		- returns the result of term.redirect() to its TermCanvas

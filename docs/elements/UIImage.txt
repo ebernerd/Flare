@@ -1,0 +1,14 @@
+
+UIImage.lua
+-----------
+
+The UIImage is an object used for displaying images.
+
+	UIImage( number x, number y, Image image )
+		- creates a UIImage containing the image given
+
+	(Callback) UIImage.onClick()
+		- called when the image is clicked
+
+	(Image) UIImage.image
+		- the image the UIImage displays

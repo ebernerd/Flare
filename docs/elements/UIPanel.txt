@@ -1,0 +1,14 @@
+
+UIPanel.lua
+-----------
+
+The UIPanel is an object used for giving an area a colour and preventing click events from being handled by elements below it.
+
+	UIPanel( number x, number y, number width, number height )
+	UIPanel( number x, number y, number width, number height, number colour )
+		- creates a panel, setting its colour if given
+
+	(number) UIPanel.colour
+		- the background colour of the panel
+		- use values from the colours table, i.e. `colours.blue`
+		- this supports 0 as a colour for transparent

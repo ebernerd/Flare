@@ -1,0 +1,48 @@
+
+UITextInput.lua
+----------
+
+	UITextInput( number x, number y, number width )
+		- creates the UITextInput field
+
+	(string) UITextInput.text
+		- the text of the field
+
+	(string) UITextInput.mask
+		- the masked chars of the field
+		- ideal for password fields
+
+	(number) UITextInput.colour
+		- the background colour of the object
+
+	(number) UITextInput.textColour
+		- the text colour of the object
+
+	(number) UITextInput.focussedColour
+		- the focussed background colour of the object
+
+	(number) UITextInput.focussedTextColour
+		- the focussed text colour of the object
+
+	(number) UITextInput.selectedColour
+		- the background colour of selected text of the object
+
+	(number) UITextInput.selectedTextColour
+		- the text colour of selected text of the object
+
+	(number) UITextInput.cursor
+		- the position for the cursor, where 0 is the first character
+
+	(number) UITextInput.selection
+		- the position of the selection, where 0 is the first character
+		- if this is 1, and cursor is 2, the second and third character will be selected
+
+	(number) UITextInput.focussed
+		- returns wether the field is focussed or not
+		- note, you can change this to false to unfocus a text input object
+
+	UITextInput:write( string text )
+		- writes the text to the object, replacing selected text if necessary, and updating the cursor position
+
+	UITextInput:focusOn()
+		- focusses on the object

@@ -1,0 +1,19 @@
+
+UIColourSelector.lua
+--------------------
+
+The UIColourSelector is an object used to select colours.
+
+	Note, the width and height of this object are rounded to the nearest multiple of the ratio
+	This means that if you have a ratio of 1 (4/4), and set the width to 9, the width will actually become 8
+
+	UIColourSelector( number x, number y, number width, number height )
+		- creates a colour selector object
+
+	(Callback) UIColourSelector:onSelect( number colour )
+		- called with the colour the user pressed
+
+	(number) UIColourSelector.ratio
+		- the ratio of columns to rows of the colour selector
+		- supported ratios are 1/16, 2/8, 4/4, 8/2, 16/1
+		- using an unsupported ratio will result in an error
