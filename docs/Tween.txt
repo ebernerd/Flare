@@ -1,0 +1,41 @@
+
+Tween.lua
+---------
+
+	Credit to kikito
+
+	Tween( table subject, table target, number duration, string easing )
+		- easing defaults to 'Tween.DEFAULT_EASING', which is "inOutSine"
+		- duration defaults to 'Tween.DEFAULT_DURATION', which is .3
+		- the subject is the object you wish to perform the tween on
+		- the target is a table containing all the values you want animated
+
+	(number) Tween.duration
+		- the duration of the tween
+
+	(table) Tween.subject
+		- the subject of the tween
+
+	(table) Tween.initial
+		- a copy of the subject holding its starting values
+
+	(table)	Tween.target
+		- the target for the values you want animated
+
+	(string) Tween.easing
+		- the easing to use
+
+	(number) Tween.clock
+		- the current clock time (0->duration)
+
+	(bool) Tween.round
+		- whether or not to round values, useful for coordinate or size information
+
+	Tween:set( number clock )
+		- sets the clock to that given and updates the values of the subject
+
+	Tween:update( number dt )
+		- adds dt to the clock and updates the values of the subject
+
+	Tween:reset()
+		- sets the clock back to 0

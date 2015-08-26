@@ -192,7 +192,7 @@ str = str .. "\nlocal f, err = load( loader, \"Flare\", nil, _ENV or getfenv() )
 if not f then\
 	error( \"there was a problem with Flare!: \" .. err, 0 )\
 end\
-f( files, " .. ("%q"):format( main ) .. " )"
+f( files, " .. ("%q"):format( main ) .. ", ... )"
 
 local w = {}
 local path = output:gsub( "%.", paths[1] ) .. ".lua"

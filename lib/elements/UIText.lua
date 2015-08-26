@@ -52,7 +52,6 @@ function UIText:onDraw()
 	self.canvas:drawPreformattedText( self.ox, self.oy, math.max( self:getContentWidth(), self.internalWidth or self.width ), math.max( self:getContentHeight(), self.internalHeight or self.height ), {
 		text = self.formattedText;
 		verticalAlignment = self.alignment;
-		textColour = self.textColour;
 		selectedColour = self.selectedColour;
 		selectedTextColour = self.selectedTextColour;
 	} )

@@ -83,7 +83,7 @@ end
 
 function UIView:handle( event )
 
-	if event:typeOf( KeyboardEvent ) and event.name == Event.KEYDOWN then
+	if event.name == Event.KEYDOWN then
 		local a, l = nil, -1
 		for i = 1, #self.shortcuts do
 			if #self.shortcuts[i][2] > l and event:matchesHotkey( self.shortcuts[i][2] ) then
@@ -96,6 +96,6 @@ function UIView:handle( event )
 		end
 	end
 
-	self.super:handle( event )
+	return UIElement.handle( self, event )
 
 end

@@ -104,7 +104,6 @@
 Text formatting in Flare is used by typing @[function]...
 
 There are currently 5 functions
-
 	Alignment: a
 		- takes l, r or c to align text horizontally
 		- i.e. "@ac" to centre align
@@ -120,8 +119,7 @@ There are currently 5 functions
 	Link: l
 		- formatted like so:
 			@l[display](link)
-		- will trigger onLinkPressed( link ) of the parent object
-		- note that this doesn't affect the text colour of the text, you have to manually do that if you want it any different
+		- will trigger onLinkFollowed() of the parent object, but not yet implemented
 
 	Marker: m
 		- formatted like so:
@@ -131,24 +129,23 @@ There are currently 5 functions
 You can also use @ as an escape character, so "@@" will be a single @ in the text object.
 
 Colour identifiers:
-
-	0 = white
-	1 = orange
-	2 = magenta
-	3 = lightBlue
-	4 = yellow
-	5 = lime
-	6 = pink
-	7 = grey
-	8 = lightGrey
-	9 = cyan
-	a = purple
-	b = blue
-	c = brown
-	d = green
-	e = red
-	f = black
-	  = transparent (space)
+* 0 = white
+* 1 = orange
+* 2 = magenta
+* 3 = lightBlue
+* 4 = yellow
+* 5 = lime
+* 6 = pink
+* 7 = grey
+* 8 = lightGrey
+* 9 = cyan
+* a = purple
+* b = blue
+* c = brown
+* d = green
+* e = red
+* f = black
+*   = transparent (space)
 
 Example:
 	

@@ -186,7 +186,7 @@ end
 function UIEventHelpers.textSelection:getCharacter( x, y, lines, alignment, width, height )
 
 	local line = math.max( 1, math.min( #lines, 1 + y - ( ( alignment == "centre" and math.floor( height / 2 - #lines / 2 + .5 ) ) or ( alignment == "bottom" and height - #lines ) or 0 ) ) )
-	if not lines[line] then return 0, 0, 0 end
+	if not lines[line] then return nil end
 
 	local pos = 0
 	for l = 1, line - 1 do
@@ -238,7 +238,28 @@ function UIEventHelpers.textSelection:selectRange( lines, line1, char1, line2, c
 
 end
 
+function UIEventHelpers.textSelection:getCharacterLink( x, y, lines, alignment, width, height )
+
+	local line = math.max( 1, math.min( #lines, 1 + y - ( ( alignment == "centre" and math.floor( height / 2 - #lines / 2 + .5 ) ) or ( alignment == "bottom" and height - #lines ) or 0 ) ) )
+	if not lines[line] then return nil end
+
+	local pos = 0
+	for l = 1, line - 1 do
+		pos = pos + #lines[l]
+	end
+
+	local a = lines[line].alignment
+	local c = 1 + x - ( ( a == "centre" and math.floor( width / 2 - #lines[line] / 2 + .5 ) ) or ( a == "right" and width - #lines[line] ) or 0 ), #lines[line]
+
+	if lines[line][c] then
+		return lines[line][c].link
+	end
+
+end
+
 function UIEventHelpers.textSelection:handleMouseEvent( event, lines, alignment, width, height )
+
+	-- getCharacterLink( self, event.x - self.ox, event.y - self.oy, lines, alignment, width, height )
 
 	if event.name == Event.MOUSEDOWN then
 		UIEventHelpers.textSelection.deselectAll( self, lines )
@@ -246,23 +267,35 @@ function UIEventHelpers.textSelection:handleMouseEvent( event, lines, alignment,
 			self.selection = nil
 		else
 			local pos, line, char = UIEventHelpers.textSelection.getCharacter( self, event.x - self.ox, event.y - self.oy, lines, alignment, width, height )
-			self.selection = {
-				line1 = line;
-				char1 = char;
-				pos1 = pos;
-				line2 = line;
-				char2 = char;
-				pos2 = pos;
-				holding = true;
-				button = event.button;
-				initialised = false;
-			}
+			if pos then
+				self.selection = {
+					line1 = line;
+					char1 = char;
+					pos1 = pos;
+					line2 = line;
+					char2 = char;
+					pos2 = pos;
+					holding = true;
+					button = event.button;
+					initialised = false;
+				}
+			end
 			event.handled = true
 		end
 		self.changed = true
 
 	elseif not event.handled and event.name == Event.MOUSEUP and self.selection and event.button == self.selection.button then
 		self.selection.holding = false
+		if not self.selection.initialised then
+			if self.onLinkPressed then
+				local link = UIEventHelpers.textSelection.getCharacterLink( self, event.x - self.ox, event.y - self.oy, lines, alignment, width, height )
+				if link then
+					self:onLinkPressed( link )
+				end
+			end
+			self.selection = nil
+		end
+
 		event.handled = true
 
 	elseif not event.handled and event.name == Event.MOUSEDRAG and self.selection and self.selection.holding then

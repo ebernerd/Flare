@@ -157,7 +157,7 @@ env.application = application
 require "init"
 
 if type( application.load ) == "function" then
-	application:load( ... )
+	application:load( select( 3, ... ) )
 end
 
 while running do

@@ -518,7 +518,7 @@ function DrawingCanvas:drawPreformattedText( x, y, width, height, options )
 	local selectedTC = options.selectedTextColour or 1
 	local lines = options.text
 	local cwidth = self.width
-	local pos = ( ( verticalAlignment == "centre" and math.floor( height / 2 - #lines / 2 + .5 ) or ( verticalAlignment == "bottom" and height - #lines ) or 0 ) + y ) * cwidth + x
+	local pos = ( ( ( verticalAlignment == "centre" and math.floor( height / 2 - #lines / 2 + .5 ) ) or ( verticalAlignment == "bottom" and height - #lines ) or 0 ) + y ) * cwidth + x
 	local i = 1
 
 	for l = 1, #lines do

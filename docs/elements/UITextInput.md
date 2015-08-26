@@ -1,7 +1,7 @@
 
 # UITextInput
 
-### The UITextInput element is an element for getting single-line, unformatted text input.
+### The UITextInput element is an element for getting single line, unformatted text input.
 
 ![Oh noes!](http://puu.sh/jGVTp/afd5231f63.png)
 
@@ -12,20 +12,6 @@
 `UITextInput( number x, number y, number width )`
 
 * creates the UITextInput field
-
----
-
-### Callbacks
-
-`UITextInput:onEnter()`
-
-* called when enter is pressed while the textbox is focussed
-* note that the textbox will have already defocussed when this is called
-
-`UITextInput:onTab()`
-
-* called when tab is pressed while the textbox is focussed
-* note that the textbox will have already defocussed when this is called
 
 ---
 

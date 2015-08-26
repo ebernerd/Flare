@@ -94,7 +94,9 @@ function class:new( name ) -- creates a new class
 							getting[k] = nil
 							return value
 						end
-						local use, value = genericgetter( k )
+						getting[k] = true
+						local use, value = genericgetter( self, k )
+						getting[k] = nil
 						if use then return value end
 					end
 					return raw[k]
@@ -130,7 +132,9 @@ function class:new( name ) -- creates a new class
 							setting[k] = nil
 							return
 						end
-						local use = genericsetter( k, v )
+						setting[k] = true
+						local use = genericsetter( self, k, v )
+						setting[k] = nil
 						if use then return end
 					end
 					raw[k] = v

@@ -1,4 +1,3 @@
-Add text link follower to UIEventHelpers
 Finish Image class
 UIFileDialogue tweak (commented at top of file)
 Make ScreenCanvas togreyscale()
